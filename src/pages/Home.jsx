@@ -8,8 +8,8 @@ import PopUp from "../components/PopUp";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL || 'https://ytnidfgdppzywmhbuyyn.supabase.co',
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_cIeC5DSC4oZZNFKcuMeAEg_V7iNodoi'
+    'https://ytnidfgdppzywmhbuyyn.supabase.co',
+    'sb_publishable_cIeC5DSC4oZZNFKcuMeAEg_V7iNodoi'
 );
 
 const Home = () => {
