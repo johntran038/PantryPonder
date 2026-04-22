@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const PopUp = ({ className, open, setOpen }) => {
+const PopUp = ({ className, open, setOpen, children}) => {
 
     const ref = useRef(null);
 
@@ -22,7 +22,7 @@ const PopUp = ({ className, open, setOpen }) => {
     return (<>
         {open && (
         <div ref={ref} className={`bg-white rounded-lg shadow-lg p-6 h-150 w-250 outline pointer-events-auto ${className}`}>
-            test
+            {children}
         </div>
     )}
     </>)

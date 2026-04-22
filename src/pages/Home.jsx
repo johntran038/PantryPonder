@@ -20,7 +20,7 @@ const Home = () => {
 
     useEffect(() => {
         async function getDish() {
-            const { data } = await supabase.from("Dish").select("*");
+            const { data } = await supabase.from("dish").select("*");
             setDish(data);
         }
         getDish();
@@ -33,19 +33,19 @@ const Home = () => {
     return (
         <div className="">
             <div className="fixed inset-0 flex items-center justify-center z-999 pointer-events-none">
-                <PopUp open={openPopup} setOpen={setOpenPopup} />
+                <PopUp open={openPopup} setOpen={setOpenPopup}>
+                    test
+                </PopUp>
             </div>
             <div className="h-screen grid grid-cols-8">
                 <Sidebar onClick={setOpenPopup} />
                 <div className="bg-blue-200 col-span-7 p-2">
                     <FreeHeightPanel cols={5}>
-                        <Post />
-                        <Post />
-                        <Post />
-                        <Post />
-                        <Post />
-                        <Post />
-                        <Post />
+                        {dish.map((dish, index) => (
+                            <Post key={index}
+                                details={dish}
+                            />
+                        ))}
                     </FreeHeightPanel>
                 </div>
             </div>

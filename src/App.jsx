@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 function App() {
     const Home = lazy(() => import("./pages/Home"));
     const Login = lazy(() => import("./pages/Login"));
+    const Dish = lazy(() => import("./pages/Dish"));
     // const TestParam = lazy(() => import("./pages/TestParam"));
     
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Routes>
                     <Route exact path="/" element={<Home />} />
                     <Route exact path="/login/" element={<Login />} />
+                    <Route exact path="/dish/:id" element={<Dish/>} />
                     {/* <Route exact path="/products/test/:param" element={<TestParam/>} /> */}
                 </Routes>
             </Suspense>

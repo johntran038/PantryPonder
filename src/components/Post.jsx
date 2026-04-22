@@ -1,11 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const Post = ({ className, details }) => {
+const Post = ({ className, details={} }) => {
 
-    // const {dishName, image, ingredients, recipe} = details;
+    const navigate = useNavigate();
+
+    const {dish_id, dish_name, img_url, ingredients, recipe} = details;
 
     //this is just to test it out
-    const heightList = [40, 32, 60, 12, 72, 48, 28, 64];
+    const heightList = ["h-40", "h-32", "h-60", "h-12", "h-72", "h-48", "h-28", "h-64"];
     const colorList = ['bg-red-500', 'bg-blue-500', 'bg-green-500']
     const randomHeightIndex = Math.floor(Math.random() * heightList.length);
 
@@ -13,10 +16,13 @@ const Post = ({ className, details }) => {
         const randomIndex = Math.floor(Math.random() * list.length);
         return list[randomIndex];
     };
+    
 
     return (
-        <div className={`${className} ${getRandomData(colorList)} h-${getRandomData(heightList)}`}>
-            post
+        <div className={`${className} ${getRandomData(colorList)} ${getRandomData(heightList)}`}
+            onClick={()=>{navigate(`/dish/${dish_id}`)}}
+        >
+            {dish_name || "post"}
         </div>
     )
 };
