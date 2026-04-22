@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+    import.meta.env.VITE_SUPABASE_URL || 'https://ytnidfgdppzywmhbuyyn.supabase.co',
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_cIeC5DSC4oZZNFKcuMeAEg_V7iNodoi'
 );
 
 const Dish = () => {
