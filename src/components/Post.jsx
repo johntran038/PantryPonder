@@ -19,9 +19,11 @@ const Post = ({ className, details={} }) => {
     
 
     return (
-        <div className={`${className} ${getRandomData(colorList)} ${getRandomData(heightList)}`}
+        // <div className={`${className} ${getRandomData(colorList)} ${getRandomData(heightList)}`}
+        <div className={`${className} bg-purple-300`}
             onClick={()=>{navigate(`/dish/${dish_id}`)}}
         >
+            <img src={img_url} alt="" />
             {dish_name || "post"}
         </div>
     )
