@@ -1,3 +1,10 @@
 x added dynamic page for each dish
 x got ingredients to console log as a list by making a view
 - properly render ingredients list
+- complete login page and profile page
+- on supabase, add "owner of dish" as a foreign key for profile_id
+- - make some fake profiles
+- allow user with profile to post
+- allow user to filter by ingredients
+- - save ingredients in local storage
+- allow user to update previous post
