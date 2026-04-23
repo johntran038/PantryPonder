@@ -5,12 +5,9 @@ import Sidebar from "../components/Sidebar";
 import FreeHeightPanel from "../components/FreeHeightPanel";
 import Post from "../components/Post";
 import PopUp from "../components/PopUp";
-import { createClient } from "@supabase/supabase-js";
+import {useSupabase} from "../hook/useSupaBase";
 
-const supabase = createClient(
-    'https://ytnidfgdppzywmhbuyyn.supabase.co',
-    'sb_publishable_cIeC5DSC4oZZNFKcuMeAEg_V7iNodoi'
-);
+const { supabase } = useSupabase();
 
 const Home = () => {
 

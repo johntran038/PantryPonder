@@ -1,11 +1,8 @@
 import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
+import {useSupabase} from "../hook/useSupaBase";
 
-const supabase = createClient(
-    'https://ytnidfgdppzywmhbuyyn.supabase.co',
-    'sb_publishable_cIeC5DSC4oZZNFKcuMeAEg_V7iNodoi'
-);
+const { supabase } = useSupabase();
 
 const Dish = () => {
 
@@ -28,7 +25,7 @@ const Dish = () => {
         getDish();
     }, [])
 
-    console.log(dish);
+    console.log("Dish:", dish);
     
 
 
@@ -36,8 +33,8 @@ const Dish = () => {
         <div className="h-screen bg-blue-200">
             <li>
                 <ul>Dish: {dish?.dish_name ||''}</ul>
-                <ul>Recipe: {dish.recipe || ''}</ul>
-                <ul>Ingredients: {dish.ingredients || ''}</ul>
+                <ul>Recipe: {dish?.recipe || ''}</ul>
+                <ul>Ingredients: {dish?.ingredients || ''}</ul>
             </li>
         </div>
     )

@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { useNavigate } from "react-router-dom"
+import {useSupabase} from "../hook/useSupaBase";
 
-const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
-)
+const { supabase } = useSupabase();
 
 export default function App() {
     const [session, setSession] = useState(null)
