@@ -5,26 +5,46 @@ import Sidebar from "../components/Sidebar";
 import FreeHeightPanel from "../components/FreeHeightPanel";
 import Post from "../components/Post";
 import PopUp from "../components/PopUp";
-import {useSupabase} from "../hook/useSupaBase";
+import { useSupabase } from "../hook/useSupaBase";
+import { useSession } from "../hook/useSession";
 
-const { supabase } = useSupabase();
 
 const Home = () => {
+    const { supabase } = useSupabase();
+    const { session, loading } = useSession();
 
     const [dish, setDish] = useState([]);
+    const [username, setUsername] = useState([]);
 
     const [openPopup, setOpenPopup] = useState(false);
 
     useEffect(() => {
         async function getDish() {
-            const { data } = await supabase.from("dish").select("*");
+            const { data } = await supabase.from("dish").select("dish_id, dish_name, img_url");
             setDish(data);
         }
         getDish();
     }, [])
 
     useEffect(() => {
-        console.log(dish);
+        if (!session?.user?.id) return;
+        async function getUsername() {
+            const { data } = await supabase
+                .from("profile")
+                .select("username")
+                .eq("id", session?.user.id)
+            setUsername(data[0]?.username);
+        }
+        getUsername();
+    }, [session])
+
+    useEffect(() => {
+        if (!session?.user?.id) return;
+        console.log(session.user.email);
+    }, [session])
+
+    useEffect(() => {
+        // console.log(dish);
     }, [dish])
 
     return (
@@ -35,7 +55,7 @@ const Home = () => {
                 </PopUp>
             </div>
             <div className="h-screen grid grid-cols-8">
-                <Sidebar onClick={setOpenPopup} />
+                <Sidebar onClick={setOpenPopup} username={username} />
                 <div className="bg-blue-200 col-span-7 p-2">
                     <FreeHeightPanel cols={5}>
                         {dish.map((dish, index) => (

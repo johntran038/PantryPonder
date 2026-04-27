@@ -1,49 +1,49 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom"
-import {useSupabase} from "../hook/useSupaBase";
+import { useSupabase } from "../hook/useSupaBase";
+import { useSession } from '../hook/useSession';
 
-const { supabase } = useSupabase();
 
-export default function App() {
-    const [session, setSession] = useState(null)
+const Login = () => {
+    const { supabase } = useSupabase();
+
+    const { session, loading } = useSession();
+
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [displayName, setDisplayName] = useState('')
+    const [username, setUsername] = useState('')
     const [isSignup, setIsSignup] = useState(false)
-    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        // Get current session
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-        })
-
-        // Listen for changes
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session)
-        })
-
-        return () => subscription.unsubscribe()
-    }, [])
-
     const handleAuth = async (e) => {
         e.preventDefault()
-        setLoading(true)
 
         if (isSignup) {
-            const { error } = await supabase.auth.signUp({
+            const { data, error } = await supabase.auth.signUp({
                 email,
                 password,
             })
 
             if (error) {
+                console.error(error)
                 alert(error.message)
             } else {
-                alert('Account created! You can now log in.')
-                setIsSignup(false)
+                console.log(data)
+                const user = data.user
+
+                if (user) {
+                    await supabase
+                        .from("profile")
+                        .update({
+                            display_name: displayName,
+                            username: username,
+                        })
+                        .eq("id", user.id)
+                }
+
+                alert('Account created!')
             }
         } else {
             const { error } = await supabase.auth.signInWithPassword({
@@ -57,8 +57,6 @@ export default function App() {
                 navigate('/')
             }
         }
-
-        setLoading(false)
     }
 
     const handleLogout = async () => {
@@ -82,21 +80,42 @@ export default function App() {
             <h1>{isSignup ? 'Sign Up' : 'Login'}</h1>
 
             <form onSubmit={handleAuth}>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    required
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+                <section>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        required
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
 
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    required
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        required
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </section>
+                {isSignup && (
+                    <section>
+                        <input
+                            type="text"
+                            placeholder="Display Name"
+                            value={displayName}
+                            required
+                            onChange={(e) => setDisplayName(e.target.value)}
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            required
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </section>
+                )}
 
                 <button disabled={loading}>
                     {loading
@@ -116,3 +135,5 @@ export default function App() {
         </div>
     )
 }
+
+export default Login;

@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {useSupabase} from "../hook/useSupaBase";
+import { useSupabase } from "../hook/useSupaBase";
 
-const { supabase } = useSupabase();
 
 const Dish = () => {
+
+    const { supabase } = useSupabase();
 
     const [dish, setDish] = useState({});
 
@@ -25,16 +26,26 @@ const Dish = () => {
         getDish();
     }, [])
 
-    console.log("Dish:", dish);
-    
+    // console.log("Dish:", dish);
 
+    // console.log("??", typeof dish.ingredients, dish.ingredients);
+    
 
     return (
         <div className="h-screen bg-blue-200">
             <li>
-                <ul>Dish: {dish?.dish_name ||''}</ul>
+                <ul>Dish: {dish?.dish_name || ''}</ul>
                 <ul>Recipe: {dish?.recipe || ''}</ul>
-                <ul>Ingredients: {dish?.ingredients || ''}</ul>
+                <ul>Ingredients:
+                {(dish && dish?.ingredients) && 
+                        dish.ingredients.map((ingredient, key) => {
+
+                            return <div key={key}>
+                                {ingredient}
+                            </div>
+                        })
+                    }
+                </ul>
             </li>
         </div>
     )
