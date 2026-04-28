@@ -5,7 +5,7 @@ import Sidebar from "../components/Sidebar";
 import FreeHeightPanel from "../components/FreeHeightPanel";
 import Post from "../components/Post";
 import PopUp from "../components/PopUp";
-import { useSupabase } from "../hook/useSupaBase";
+import { useSupabase } from "../hook/useSupabase";
 import { useSession } from "../hook/useSession";
 
 
