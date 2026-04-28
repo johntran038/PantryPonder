@@ -33,7 +33,8 @@ const Home = () => {
                 .from("profile")
                 .select("username")
                 .eq("id", session?.user.id)
-            setUsername(data[0]?.username);
+                .single();
+            setUsername(data?.username);
         }
         getUsername();
     }, [session])

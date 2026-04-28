@@ -20,8 +20,9 @@ const Dish = () => {
             const { data, error } = await supabase
                 .from("dish_with_ingredients")
                 .select('*')
-                .eq("dish_id", id);
-            setDish(data[0]);
+                .eq("dish_id", id)
+                .single();
+            setDish(data);
         }
         getDish();
     }, [])

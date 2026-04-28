@@ -63,7 +63,6 @@ const Login = () => {
         await supabase.auth.signOut()
     }
 
-    // Logged in view
     if (session) {
         return (
             <div>
@@ -74,7 +73,6 @@ const Login = () => {
         )
     }
 
-    // Auth form
     return (
         <div>
             <h1>{isSignup ? 'Sign Up' : 'Login'}</h1>

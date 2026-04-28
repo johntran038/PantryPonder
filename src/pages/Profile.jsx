@@ -11,6 +11,7 @@ const Profile = () => {
 
     const [profile, setProfile] = useState({});
     const [image, setImage] = useState('');
+    const [dishName, setDishName] = useState('');
     const [recipe, setRecipe] = useState('');
     const [ingredientNames, setIngredientNames] = useState([]);
     const [ingredientIDs, setIngredientIDs] = useState([]);
@@ -18,8 +19,6 @@ const Profile = () => {
     const [selectedIngredient, setSelectedIngredient] = useState('');
     const [allIngredientNames, setAllIngredientNames] = useState([]);
     const [allIngredientIDs, setAllIngredientIDs] = useState([]);
-
-
 
     const navigate = useNavigate();
 
@@ -33,9 +32,9 @@ const Profile = () => {
             const { data, error } = await supabase
                 .from("profile")
                 .select('*')
-                .eq("username", username);
-            setProfile(data[0]);
-            console.log(error);
+                .eq("username", username)
+                .single();
+            setProfile(data);
         }
         getProfile();
     }, [])
@@ -57,13 +56,6 @@ const Profile = () => {
                     return ingredient.ingredient_id
                 })
             );
-
-            console.log(data.map((ingredient) => 
-                    ingredient.ingredient_name
-                ));
-            console.log(data.map((ingredient) => 
-                    ingredient.ingredient_id
-                ));
             
         }
         getAllIngredients();
@@ -74,9 +66,72 @@ const Profile = () => {
         return allIngredientIDs[index];
     };
 
+    const verifyData = () => {
+        if (!dishName.trim()) return false;
+        if (!recipe.trim()) return false;
+        if (!image) return false;
+        if (ingredientIDs.length === 0) return false;
+        return true;
+    };
+    
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if(!session) return;
+        if (!verifyData()){
+            alert("Make sure all fields are filled")
+            return;
+        };
 
+        const fileName = `${session.user.id}/${Date.now()}-${image.name}`;
+        //probably should make a check that everything is filled out
+
+        //upload img to storage
+        const { data, error:storageError } = await supabase.storage
+            .from("dish-images")
+            .upload(fileName, image);
+
+        if (storageError) {
+            console.error(storageError);
+            return;
+        }
+
+        const { data: urlData } = supabase.storage
+            .from("dish-images")
+            .getPublicUrl(fileName);
+
+        const img_url = urlData.publicUrl;
+
+        //upload the user's dish
+        const { data: dish, error: dishError } = await supabase.from("dish").insert({
+            dish_name: dishName,
+            recipe: recipe,
+            img_url: img_url,
+            creator_id: session.user.id,
+        })
+        .select()
+        .single();
+
+        if(dishError){
+
+        }else{
+            console.log("Dish Upload In Progress...");
+        }
+
+        const dishIngredients = ingredientIDs.map((ingredient_id) => ({
+            dish_id: dish.dish_id,
+            ingredient_id,
+        }));
+        
+        const { data: dish_ingredients, error: dishIngredientsError } = await supabase
+            .from("dish_ingredient")
+            .insert(dishIngredients)
+        .select();
+
+        if(dishIngredientsError){
+
+        }else{
+            console.log("Dish Upload Complete!");
+        }
     }
 
     const handleAddIngredient = () => {
@@ -121,13 +176,12 @@ const Profile = () => {
     }
 
     useEffect(()=>{
-        console.log(ingredientNames);
-        console.log(ingredientIDs);
+        // console.log(ingredientNames);
+        // console.log(ingredientIDs);
         
     }, [ingredientIDs, ingredientNames]);
 
     const RenderTags = () => {
-
         return (<>
             {ingredientNames.map((ingredient, index)=>(
                 <Tag key={index} name={ingredient} onRemove={handleRemoveIngredient}/>
@@ -138,10 +192,18 @@ const Profile = () => {
     return (
         <div className="h-screen bg-blue-200">
             <form onSubmit={handleSubmit} className="space-y-2">
-                <input type="file" required />
+                <input type="file" required onChange={(e) => setImage(e.target?.files?.[0])}/>
+                <input
+                    type="text"
+                    placeholder="dish name"
+                    required
+                    value={dishName}
+                    onChange={(e) => setDishName(e.target.value)}
+                />
                 <input
                     type="text"
                     placeholder="recipe"
+                    required
                     value={recipe}
                     onChange={(e) => setRecipe(e.target.value)}
                 />
@@ -171,13 +233,13 @@ const Profile = () => {
                 <section>
                     <RenderTags/>
                 </section>
+                <p style={{ marginTop: '10px' }}>
+                    <button>
+                        post
+                    </button>
+                </p>
             </form>
 
-            <p style={{ marginTop: '10px' }}>
-                <button>
-                    post
-                </button>
-            </p>
             <div className="mt-10">
                 <button onClick={handleLogout}>sign out</button>
             </div>
