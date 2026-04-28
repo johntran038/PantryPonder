@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom"
-import { useSupabase } from "../hook/useSupaBase";
+import { useSupabase } from "../hook/useSupabase";
 import { useSession } from '../hook/useSession';
 
 
