@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ className, onClick, username }) => {
+
+const Sidebar = ({ className, onClick, session, username }) => {
 
     const navigate = useNavigate();
     
@@ -23,11 +24,20 @@ const Sidebar = ({ className, onClick, username }) => {
                 {/* <div className="bg-red-200 flex justify-center items-center">
                     <button>Saved Dishes</button>
                 </div> */}
-                <div className="bg-red-200 flex justify-center items-center">
-                    <button onClick={()=>{navigate(`/${username}`)}}>
-                        My Profile
-                    </button>
-                </div>
+                {session && (
+                    <div className="bg-red-200 flex justify-center items-center">
+                        <button onClick={()=>{navigate(`/${username}`)}}>
+                            My Profile
+                        </button>
+                    </div>
+                )}
+                {!session && (
+                    <div className="bg-red-200 flex justify-center items-center">
+                        <button onClick={()=>{navigate("/login")}}>
+                            Login
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     )

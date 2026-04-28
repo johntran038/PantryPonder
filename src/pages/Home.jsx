@@ -55,7 +55,7 @@ const Home = () => {
                 </PopUp>
             </div>
             <div className="h-screen grid grid-cols-8">
-                <Sidebar onClick={setOpenPopup} username={username} />
+                <Sidebar onClick={setOpenPopup} session={session} username={username} />
                 <div className="bg-blue-200 col-span-7 p-2">
                     <FreeHeightPanel cols={5}>
                         {dish.map((dish, index) => (
