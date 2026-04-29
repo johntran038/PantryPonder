@@ -3,29 +3,30 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom"
 import { useSupabase } from "../hook/useSupabase";
 import { useSession } from "../hook/useSession";
-import Tag from "../components/Tag";
+import Tag from "../components/DishPostComponents/Tag";
+import Sidebar from "../components/NavComponents/Sidebar";
 
-const { supabase } = useSupabase();
 
 const Profile = () => {
+    const { supabase } = useSupabase();
 
     const [profile, setProfile] = useState({});
-    const [image, setImage] = useState('');
-    const [dishName, setDishName] = useState('');
-    const [recipe, setRecipe] = useState('');
-    const [ingredientNames, setIngredientNames] = useState([]);
-    const [ingredientIDs, setIngredientIDs] = useState([]);
+    // const [image, setImage] = useState('');
+    // const [dishName, setDishName] = useState('');
+    // const [recipe, setRecipe] = useState('');
+    // const [ingredientNames, setIngredientNames] = useState([]);
+    // const [ingredientIDs, setIngredientIDs] = useState([]);
 
-    const [selectedIngredient, setSelectedIngredient] = useState('');
-    const [allIngredientNames, setAllIngredientNames] = useState([]);
-    const [allIngredientIDs, setAllIngredientIDs] = useState([]);
+    // const [selectedIngredient, setSelectedIngredient] = useState('');
+    // const [allIngredientNames, setAllIngredientNames] = useState([]);
+    // const [allIngredientIDs, setAllIngredientIDs] = useState([]);
 
     const navigate = useNavigate();
 
     const { session, error } = useSession();
 
     const { username } = useParams();
-    
+
 
     useEffect(() => {
         async function getProfile() {
@@ -39,131 +40,131 @@ const Profile = () => {
         getProfile();
     }, [])
 
-    
-    useEffect(() => {
-        async function getAllIngredients() {
-            const { data, error } = await supabase
-                .from("ingredient")
-                .select('*');
 
-            setAllIngredientNames(
-                data.map((ingredient) => 
-                    ingredient.ingredient_name
-                )
-            );
-            setAllIngredientIDs(
-                    data.map((ingredient) => {
-                    return ingredient.ingredient_id
-                })
-            );
-            
-        }
-        getAllIngredients();
-    }, [])
+    // useEffect(() => {
+    //     async function getAllIngredients() {
+    //         const { data, error } = await supabase
+    //             .from("ingredient")
+    //             .select('*');
 
-    const getIngredientID = (name) => {
-        const index = allIngredientNames.indexOf(name);
-        return allIngredientIDs[index];
-    };
+    //         setAllIngredientNames(
+    //             data.map((ingredient) => 
+    //                 ingredient.ingredient_name
+    //             )
+    //         );
+    //         setAllIngredientIDs(
+    //                 data.map((ingredient) => {
+    //                 return ingredient.ingredient_id
+    //             })
+    //         );
 
-    const verifyData = () => {
-        if (!dishName.trim()) return false;
-        if (!recipe.trim()) return false;
-        if (!image) return false;
-        if (ingredientIDs.length === 0) return false;
-        return true;
-    };
-    
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        if(!session) return;
-        if (!verifyData()){
-            alert("Make sure all fields are filled")
-            return;
-        };
+    //     }
+    //     getAllIngredients();
+    // }, [])
 
-        const fileName = `${session.user.id}/${Date.now()}-${image.name}`;
-        //probably should make a check that everything is filled out
+    // const getIngredientID = (name) => {
+    //     const index = allIngredientNames.indexOf(name);
+    //     return allIngredientIDs[index];
+    // };
 
-        //upload img to storage
-        const { data, error:storageError } = await supabase.storage
-            .from("dish-images")
-            .upload(fileName, image);
+    // const verifyData = () => {
+    //     if (!dishName.trim()) return false;
+    //     if (!recipe.trim()) return false;
+    //     if (!image) return false;
+    //     if (ingredientIDs.length === 0) return false;
+    //     return true;
+    // };
 
-        if (storageError) {
-            console.error(storageError);
-            return;
-        }
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault()
+    //     if(!session) return;
+    //     if (!verifyData()){
+    //         alert("Make sure all fields are filled")
+    //         return;
+    //     };
 
-        const { data: urlData } = supabase.storage
-            .from("dish-images")
-            .getPublicUrl(fileName);
+    //     const fileName = `${session.user.id}/${Date.now()}-${image.name}`;
+    //     //probably should make a check that everything is filled out
 
-        const img_url = urlData.publicUrl;
+    //     //upload img to storage
+    //     const { data, error:storageError } = await supabase.storage
+    //         .from("dish-images")
+    //         .upload(fileName, image);
 
-        //upload the user's dish
-        const { data: dish, error: dishError } = await supabase.from("dish").insert({
-            dish_name: dishName,
-            recipe: recipe,
-            img_url: img_url,
-            creator_id: session.user.id,
-        })
-        .select()
-        .single();
+    //     if (storageError) {
+    //         console.error(storageError);
+    //         return;
+    //     }
 
-        if(dishError){
+    //     const { data: urlData } = supabase.storage
+    //         .from("dish-images")
+    //         .getPublicUrl(fileName);
 
-        }else{
-            console.log("Dish Upload In Progress...");
-        }
+    //     const img_url = urlData.publicUrl;
 
-        const dishIngredients = ingredientIDs.map((ingredient_id) => ({
-            dish_id: dish.dish_id,
-            ingredient_id,
-        }));
-        
-        const { data: dish_ingredients, error: dishIngredientsError } = await supabase
-            .from("dish_ingredient")
-            .insert(dishIngredients)
-        .select();
+    //     //upload the user's dish
+    //     const { data: dish, error: dishError } = await supabase.from("dish").insert({
+    //         dish_name: dishName,
+    //         recipe: recipe,
+    //         img_url: img_url,
+    //         creator_id: session.user.id,
+    //     })
+    //     .select()
+    //     .single();
 
-        if(dishIngredientsError){
+    //     if(dishError){
 
-        }else{
-            console.log("Dish Upload Complete!");
-        }
-    }
+    //     }else{
+    //         console.log("Dish Upload In Progress...");
+    //     }
 
-    const handleAddIngredient = () => {
-        if(!allIngredientNames.includes(selectedIngredient)) return;
-        setIngredientNames((prev)=> 
-            prev.includes(selectedIngredient)
-            ? prev
-            : [...prev, selectedIngredient]
-        )
-        const selectedID = getIngredientID(selectedIngredient)
-        setIngredientIDs((prev)=> 
-            prev.includes(selectedID)
-            ? prev
-            : [...prev, selectedID]
-        )
-        setSelectedIngredient('');
-    };
+    //     const dishIngredients = ingredientIDs.map((ingredient_id) => ({
+    //         dish_id: dish.dish_id,
+    //         ingredient_id,
+    //     }));
 
-    const handleRemoveIngredient = (ingredientToRemove) => {
-        
-        setIngredientNames(
-            ingredientNames.filter(
-                (ingredient) => ingredient != ingredientToRemove
-            )
-        );
-        const idToRemove = getIngredientID(ingredientToRemove)
-        setIngredientIDs(
-            ingredientIDs.filter(
-                (ingredient) => ingredient != idToRemove
-            )
-        );
-    };
+    //     const { data: dish_ingredients, error: dishIngredientsError } = await supabase
+    //         .from("dish_ingredient")
+    //         .insert(dishIngredients)
+    //     .select();
+
+    //     if(dishIngredientsError){
+
+    //     }else{
+    //         console.log("Dish Upload Complete!");
+    //     }
+    // }
+
+    // const handleAddIngredient = () => {
+    //     if(!allIngredientNames.includes(selectedIngredient)) return;
+    //     setIngredientNames((prev)=> 
+    //         prev.includes(selectedIngredient)
+    //         ? prev
+    //         : [...prev, selectedIngredient]
+    //     )
+    //     const selectedID = getIngredientID(selectedIngredient)
+    //     setIngredientIDs((prev)=> 
+    //         prev.includes(selectedID)
+    //         ? prev
+    //         : [...prev, selectedID]
+    //     )
+    //     setSelectedIngredient('');
+    // };
+
+    // const handleRemoveIngredient = (ingredientToRemove) => {
+
+    //     setIngredientNames(
+    //         ingredientNames.filter(
+    //             (ingredient) => ingredient != ingredientToRemove
+    //         )
+    //     );
+    //     const idToRemove = getIngredientID(ingredientToRemove)
+    //     setIngredientIDs(
+    //         ingredientIDs.filter(
+    //             (ingredient) => ingredient != idToRemove
+    //         )
+    //     );
+    // };
 
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
@@ -175,73 +176,44 @@ const Profile = () => {
         }
     }
 
-    useEffect(()=>{
-        // console.log(ingredientNames);
-        // console.log(ingredientIDs);
-        
-    }, [ingredientIDs, ingredientNames]);
+    // useEffect(()=>{
+    //     // console.log(ingredientNames);
+    //     // console.log(ingredientIDs);
 
-    const RenderTags = () => {
-        return (<>
-            {ingredientNames.map((ingredient, index)=>(
-                <Tag key={index} name={ingredient} onRemove={handleRemoveIngredient}/>
-            ))}
-        </>);
-    };
+    // }, [ingredientIDs, ingredientNames]);
+
+    // const RenderTags = () => {
+    //     return (<>
+    //         {ingredientNames.map((ingredient, index)=>(
+    //             <Tag key={index} name={ingredient} onRemove={handleRemoveIngredient}/>
+    //         ))}
+    //     </>);
+    // };
+
+    console.log(profile);
+
 
     return (
-        <div className="h-screen bg-blue-200">
-            <form onSubmit={handleSubmit} className="space-y-2">
-                <input type="file" required onChange={(e) => setImage(e.target?.files?.[0])}/>
-                <input
-                    type="text"
-                    placeholder="dish name"
-                    required
-                    value={dishName}
-                    onChange={(e) => setDishName(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="recipe"
-                    required
-                    value={recipe}
-                    onChange={(e) => setRecipe(e.target.value)}
-                />
-                <section>
-                    <label htmlFor="ingredients" className="mr-2">Add ingredients:</label>
-                     <input
-                        type="text"
-                        list="ingredient-list"
-                        id="ingredients"
-                        value={selectedIngredient}
-                        className="outline-none bg-white px-1"
-                        onChange={(e) => setSelectedIngredient(e.target.value)}
-                    />
-                    <datalist name="ingredient-list" id="ingredient-list">
-                        {(allIngredientIDs && allIngredientNames) &&
-                            allIngredientNames.map((data, index)=>
-                                <option key={index} value={data}/>
-                            )
-                        }
-                    </datalist>
-                    <button type="button" className="ml-2 px-1 bg-gray-400"
-                        onClick={handleAddIngredient}
-                    >
-                        Add Tag
-                    </button>
-                </section>
-                <section>
-                    <RenderTags/>
-                </section>
-                <p style={{ marginTop: '10px' }}>
-                    <button>
-                        post
-                    </button>
-                </p>
-            </form>
-
-            <div className="mt-10">
-                <button onClick={handleLogout}>sign out</button>
+        <div className="h-screen bg-blue-200  grid grid-cols-8">
+            <Sidebar session={session} username={username} />
+            {/* <h1 className="mb-5 text-lg">
+                <button onClick={() => { navigate(`/`) }}>
+                    Back to Home
+                </button>
+            </h1> */}
+            <div className="col-span-7">
+            {session &&
+                <div className="p-4">
+                    {profile &&
+                        <ul>
+                            <li>Username: {profile?.username || ''}</li>
+                            <li>Display Name: {profile?.display_name || ''}</li>
+                            <li>Email: {profile?.email || ''}</li>
+                        </ul>
+                    }
+                    <button className="mt-20 hover:bg-red-500 hover:text-white p-1 rounded-lg underline" onClick={handleLogout}>Sign Out</button>
+                </div>
+            }
             </div>
         </div>
 

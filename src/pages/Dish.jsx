@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSupabase } from "../hook/useSupabase";
+import { useNavigate } from "react-router-dom"
 
 
 const Dish = () => {
 
     const { supabase } = useSupabase();
+
+    const navigate = useNavigate();
 
     const [dish, setDish] = useState({});
 
@@ -30,15 +33,20 @@ const Dish = () => {
     // console.log("Dish:", dish);
 
     // console.log("??", typeof dish.ingredients, dish.ingredients);
-    
+
 
     return (
         <div className="h-screen bg-blue-200">
-            <li>
-                <ul>Dish: {dish?.dish_name || ''}</ul>
-                <ul>Recipe: {dish?.recipe || ''}</ul>
-                <ul>Ingredients:
-                {(dish && dish?.ingredients) && 
+            <h1 className="mb-5 text-lg">
+                <button onClick={() => { navigate(`/`) }}>
+                    Back to Home
+                </button>
+            </h1>
+            <ul>
+                <li>Dish: {dish?.dish_name || ''}</li>
+                {/* <li>Recipe: {dish?.recipe || ''}</li> */}
+                <li>Ingredients:
+                    {(dish && dish?.ingredients) &&
                         dish.ingredients.map((ingredient, key) => {
 
                             return <div key={key}>
@@ -46,8 +54,9 @@ const Dish = () => {
                             </div>
                         })
                     }
-                </ul>
-            </li>
+                </li>
+            </ul>
+            <textarea className="w-full" value={dish?.recipe} />
         </div>
     )
 };

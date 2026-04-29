@@ -74,8 +74,8 @@ const Login = () => {
     }
 
     return (
-        <div>
-            <h1>{isSignup ? 'Sign Up' : 'Login'}</h1>
+        <div className='h-screen bg-blue-200 p-4'>
+            <h1 className='text-2xl'>{isSignup ? 'Sign Up' : 'Login'}</h1>
 
             <form onSubmit={handleAuth}>
                 <section>
@@ -125,9 +125,9 @@ const Login = () => {
             </form>
 
             <p style={{ marginTop: '10px' }}>
-                {isSignup ? 'Already have an account?' : 'Don’t have an account?'}
+                {isSignup ? 'Already have an account? ' : 'Don’t have an account? '}
                 <button onClick={() => setIsSignup(!isSignup)}>
-                    {isSignup ? 'Login' : 'Sign Up'}
+                    <div className='text-blue-700 hover:text-blue-500 underline'>{isSignup ? 'Login' : 'Sign Up'}</div>
                 </button>
             </p>
         </div>

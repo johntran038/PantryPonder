@@ -9,6 +9,7 @@ function App() {
     const Login = lazy(() => import("./pages/Login"));
     const Dish = lazy(() => import("./pages/Dish"));
     const Profile = lazy(() => import("./pages/Profile"));
+    const CreateDish = lazy(() => import("./pages/CreateDish"));
     // const TestParam = lazy(() => import("./pages/TestParam"));
     
     return (
@@ -16,8 +17,9 @@ function App() {
             <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
                     <Route exact path="/" element={<Home />} />
-                    <Route exact path="/login/" element={<Login />} />
+                    <Route exact path="/login" element={<Login />} />
                     <Route exact path="/dish/:id" element={<Dish/>} />
+                    <Route exact path="/create-dish" element={<CreateDish/>} />
                     <Route exact path="/:username" element={<Profile/>} />
                     {/* <Route exact path="/products/test/:param" element={<TestParam/>} /> */}
                 </Routes>

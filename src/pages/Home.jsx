@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
-import Sidebar from "../components/Sidebar";
-import FreeHeightPanel from "../components/FreeHeightPanel";
-import Post from "../components/Post";
-import PopUp from "../components/PopUp";
+import Sidebar from "../components/NavComponents/Sidebar";
+import FreeHeightPanel from "../components/UIComponents/FreeHeightPanel";
+import Post from "../components/DishPostComponents/Post";
+import PopUp from "../components/UIComponents/PopUp";
 import { useSupabase } from "../hook/useSupabase";
 import { useSession } from "../hook/useSession";
 
