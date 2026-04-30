@@ -56,7 +56,8 @@ const Dish = () => {
                     }
                 </li>
             </ul>
-            <textarea className="w-full" value={dish?.recipe} />
+            <label htmlFor="recipe">Recipe:</label>
+            <textarea id="recipe" className="w-full" value={dish?.recipe} />
         </div>
     )
 };

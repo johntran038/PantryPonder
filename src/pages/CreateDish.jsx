@@ -136,9 +136,9 @@ const CreateDish = () => {
         );
         const selectedID = getIngredientID(target)
         setIngredientIDs((prev) =>
-            prev.includes(target)
+            prev.includes(selectedID)
                 ? prev
-                : [...prev, target]
+                : [...prev, selectedID]
         );
         setSelectedIngredient('');
     };
@@ -261,15 +261,15 @@ const CreateDish = () => {
                                 }}
                                 onBlur={
                                     ()=>{
-                                        setTimeout(() => {
-                                            if(selectedIngredient.trim() != ""){
-                                                if(confirm(`You forgot to add "${selectedIngredient}" into your ingredient list. Do you want to add it?`)){
-                                                    handleAddIngredient();
-                                                }else{
-                                                    setSelectedIngredient("");
-                                                }
-                                            }
-                                        }, 2000)
+                                        // setTimeout(() => {
+                                        //     if(selectedIngredient.trim() != ""){
+                                        //         if(confirm(`You forgot to add "${selectedIngredient}" into your ingredient list. Do you want to add it?`)){
+                                        //             handleAddIngredient();
+                                        //         }else{
+                                        //             setSelectedIngredient("");
+                                        //         }
+                                        //     }
+                                        // }, 2000)
                                     }
                                 }
                                 // onKeyUp={(e) => {
