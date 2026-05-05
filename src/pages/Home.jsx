@@ -58,6 +58,9 @@ const Home = () => {
         getData();
     }, [searchIngredients])
 
+    console.log(dish.sort((di, sh)=>di.dish_id - sh.dish_id));
+    
+
     useEffect(() => {
         if (!session?.user?.id) return;
         async function getUsername() {

@@ -91,7 +91,6 @@ const CreateDish = () => {
         };
 
         const fileName = `${session.user.id}/${Date.now()}-${image.name}`;
-        //probably should make a check that everything is filled out
 
         //upload img to storage
         const { data, error: storageError } = await supabase.storage

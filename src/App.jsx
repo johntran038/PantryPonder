@@ -10,6 +10,7 @@ function App() {
     const Dish = lazy(() => import("./pages/Dish"));
     const Profile = lazy(() => import("./pages/Profile"));
     const CreateDish = lazy(() => import("./pages/CreateDish"));
+    const ImageAttributions = lazy(() => import("./pages/ImageAttributions"));
     // const TestParam = lazy(() => import("./pages/TestParam"));
     
     return (
@@ -21,6 +22,7 @@ function App() {
                     <Route exact path="/dish/:id" element={<Dish/>} />
                     <Route exact path="/create-dish" element={<CreateDish/>} />
                     <Route exact path="/:username" element={<Profile/>} />
+                    <Route exact path="/image-attributions" element={<ImageAttributions/>} />
                     {/* <Route exact path="/products/test/:param" element={<TestParam/>} /> */}
                 </Routes>
             </Suspense>
