@@ -15,6 +15,8 @@ const Login = () => {
     const [username, setUsername] = useState('')
     const [isSignup, setIsSignup] = useState(false)
 
+    const [isUniqueUsername, setIsUniqueUsername] = useState(true)
+
     const navigate = useNavigate();
 
     const handleAuth = async (e) => {
@@ -34,16 +36,22 @@ const Login = () => {
                 const user = data.user
 
                 if (user) {
-                    await supabase
-                        .from("profile")
-                        .update({
+                    const { error:publicProfileError } = await supabase
+                        .from("public_profile")
+                        .insert({
+                            id: user.id,
                             display_name: displayName,
                             username: username,
                         })
-                        .eq("id", user.id)
+
+                    if (publicProfileError) {
+                        console.error(publicProfileError);
+                        alert(publicProfileError.message);
+                    }
                 }
 
                 alert('Account created!')
+                // navigate('/')
             }
         } else {
             const { error } = await supabase.auth.signInWithPassword({
@@ -59,13 +67,28 @@ const Login = () => {
         }
     }
 
+    useEffect(()=>{
+        
+        const getData = async () => {
+            const { data: existingUser, error: usernameCheckError } = await supabase
+                .from("public_profile")
+                .select("id")
+                .eq("username", username)
+                .maybeSingle();
+            console.log(existingUser);
+            
+            setIsUniqueUsername(!(existingUser))
+        }
+        getData();
+    },[username]);
+
     const handleLogout = async () => {
         await supabase.auth.signOut()
     }
 
     if (session) {
         return (
-            <div>
+            <div className='h-screen bg-blue-200 p-4'>
                 <h1>Welcome!</h1>
                 <p>Logged in as: {session.user.email}</p>
                 <button onClick={handleLogout}>Sign Out</button>
@@ -115,7 +138,9 @@ const Login = () => {
                     </section>
                 )}
 
-                <button disabled={loading}>
+                <button className='mt-3 bg-gray-200 p-1 rounded-lg outline-1 outline-gray-400 disabled:opacity-60 disabled:text-gray-600'
+                    disabled={loading || !isUniqueUsername}
+                >
                     {loading
                         ? 'Loading...'
                         : isSignup

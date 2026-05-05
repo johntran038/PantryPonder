@@ -4,12 +4,15 @@ import { useNavigate } from "react-router-dom"
 import { useSupabase } from "../hook/useSupabase";
 import { useSession } from "../hook/useSession";
 import Sidebar from "../components/NavComponents/Sidebar";
-import Tag from "../components/DishPostComponents/Tag";
+import Tag from "../components/UIComponents/Tag";
 import PopUp from "../components/UIComponents/PopUp";
+import { LuHardDriveUpload } from "react-icons/lu";
 
 const { supabase } = useSupabase();
 
 const CreateDish = () => {
+
+    const [username, setUsername] = useState('');
 
     const [image, setImage] = useState('');
     const [dishName, setDishName] = useState('');
@@ -25,11 +28,22 @@ const CreateDish = () => {
 
     const { session, error } = useSession();
 
-    const { username } = useParams();
+    useEffect(() => {
+        if (!session?.user?.id) return;
+        async function getUsername() {
+            const { data } = await supabase
+                .from("public_profile")
+                .select("username")
+                .eq("id", session?.user.id)
+                .single();
+            setUsername(data?.username);
+        }
+        getUsername();
+    }, [session])
 
 
     useEffect(() => {
-        async function getAllIngredients() {
+        async function getData() {
             const { data, error } = await supabase
                 .from("ingredient")
                 .select('*');
@@ -46,7 +60,7 @@ const CreateDish = () => {
             );
 
         }
-        getAllIngredients();
+        getData();
     }, [])
 
     const getIngredientID = (name) => {
@@ -58,15 +72,21 @@ const CreateDish = () => {
         if (!dishName.trim()) return false;
         if (!recipe.trim()) return false;
         if (!image) return false;
+        if (selectedIngredient != '') return false;
         if (ingredientIDs.length === 0) return false;
         return true;
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!session) return;
         if (!verifyData()) {
-            alert("Make sure all fields are filled")
+            if (selectedIngredient != '') {
+                alert(`Please press "Add Tag" to add "${selectedIngredient}"`);
+            } else {
+                alert("Make sure all fields are filled");
+            }
             return;
         };
 
@@ -100,7 +120,7 @@ const CreateDish = () => {
             .single();
 
         if (dishError) {
-
+            console.log(dishError);
         } else {
             console.log("Dish Upload In Progress...");
         }
@@ -116,7 +136,7 @@ const CreateDish = () => {
             .select();
 
         if (dishIngredientsError) {
-
+            console.log(dishIngredientsError);
         } else {
             console.log("Dish Upload Complete!");
         }
@@ -124,6 +144,7 @@ const CreateDish = () => {
 
     const handleAddIngredient = () => {
         const target = selectedIngredient.trim();
+        if (target == "") return;
         if (!allIngredientNames.includes(target)) {
             alert(`The ingredient "${target}" is not found in the database`);
             setSelectedIngredient("");
@@ -180,23 +201,46 @@ const CreateDish = () => {
 
     return (
         <div className="h-screen bg-blue-200 grid grid-cols-8">
-            <Sidebar session={session}/>
-            <form onSubmit={handleSubmit} className="space-y-2 pt-1 col-span-7">
+            <Sidebar session={session} username={username} />
+            <form onSubmit={handleSubmit} className="space-y-2 pt-1 col-span-6">
 
                 <div className="grid grid-cols-2 space-x-4">
 
                     <section className="col-span-full flex items-center p-5">
                         <h1 className="text-lg">Create A Dish</h1>
-                        <button type="submit" className="ml-auto bg-gray-500 text-lg p-2 rounded-lg">
+                        <button type="submit" className="ml-auto bg-gray-200 outline-1 outline-gray-400 text-lg p-2 rounded-lg">
                             Post Dish
                         </button>
                     </section>
-                    <section className="flex mx-4">
-                        <label htmlFor="img" className="rounded-3xl h-fit ml-auto">
+                    <section className="flex mx-4 select-none">
+                        <label htmlFor="img" className="rounded-3xl h-fit ml-auto cursor-pointer outline-1 outline-gray-400 group relative">
                             {image
-                                ? <img className="w-60 rounded-3xl" src={URL.createObjectURL(image)} alt={image?.name || ""} />
-                                : <div className="bg-red-200 h-120 w-90 rounded-3xl flex justify-center items-center">Choose file to upload</div>
+                                ? <img className="w-90 rounded-3xl" src={URL.createObjectURL(image)} alt={image?.name || ""} />
+                                :
+                                <div className="bg-gray-200 h-120 w-90 rounded-3xl flex flex-col justify-center items-center">
+                                    <LuHardDriveUpload className="group-hover:z-999 group-hover:text-neutral-300" />
+                                    <div className="group-hover:z-999 group-hover:text-neutral-300">Choose file to upload</div>
+                                </div>
                             }
+                            <div className="absolute inset-0 opacity-0 hover:opacity-100
+                                rounded-3xl flex flex-col justify-between items-center 
+                                bg-linear-to-b from-neutral-600 text-neutral-300
+                                "
+                            >
+                                <div className="flex items-center h-full z-10">
+                                    {image &&
+                                        <div className="flex flex-col justify-center items-center">
+                                            <LuHardDriveUpload />
+                                            <div className="">Upload New File</div>
+                                        </div>
+                                    }
+                                </div>
+                                <div className="px-5 mb-5 text-center z-10">
+                                    File can be .png, .jpg, .jpeg, or .webp and must be less than 5MB
+                                </div>
+                                <div className="absolute inset-0 bg-neutral-900 rounded-3xl z-1 opacity-50"></div>
+                            </div>
+
                         </label>
                         <input
                             className="display-none hidden"
@@ -212,14 +256,11 @@ const CreateDish = () => {
                                     e.target.value = "";
                                     return;
                                 }
-                                // console.log("ayo?");
-
                                 setImage(e.target?.files?.[0]);
-                                // console.log(e.target?.files?.[0].size);
                             }}
                         />
                     </section>
-                    <section className="bg-orange-200 space-y-4 mx-4">
+                    <section className="space-y-4 mx-4">
                         <div className="bg-white outline-1 outline-gray-400 p-2 rounded-xl">
                             <label htmlFor="dish-name" className="block text-sm text-gray-700">Dish Name</label>
                             <input
@@ -249,64 +290,66 @@ const CreateDish = () => {
                             />
                         </div>
                         <div className="bg-white outline-1 outline-gray-400 py-4 px-2 rounded-xl">
-                            <label htmlFor="ingredients" className="mr-2">Add ingredients:</label>
-                            <input
-                                type="text"
-                                list="ingredient-list"
-                                id="ingredients"
-                                value={selectedIngredient}
-                                className="outline-none bg-white outline-1 outline-gray-400 px-1 w-max"
-                                onChange={(e) => {
-                                    setSelectedIngredient(e.target.value);
-                                }}
-                                onBlur={
-                                    ()=>{
-                                        // setTimeout(() => {
-                                        //     if(selectedIngredient.trim() != ""){
-                                        //         if(confirm(`You forgot to add "${selectedIngredient}" into your ingredient list. Do you want to add it?`)){
-                                        //             handleAddIngredient();
-                                        //         }else{
-                                        //             setSelectedIngredient("");
-                                        //         }
-                                        //     }
-                                        // }, 2000)
+                            <label htmlFor="dish-name" className="block text-sm text-gray-700">Ingredients ({ingredientNames.length})</label>
+                            <div className="flex">
+                                <input
+                                    type="text"
+                                    list="ingredient-list"
+                                    id="ingredients"
+                                    value={selectedIngredient}
+                                    placeholder="Add Ingredient"
+                                    className="outline-none bg-white outline-1 outline-gray-400 px-1 flex-grow"
+                                    onChange={(e) => {
+                                        setSelectedIngredient(e.target.value);
+                                    }}
+                                    onBlur={
+                                        () => {
+                                            // setTimeout(() => {
+                                            //     if(selectedIngredient.trim() != ""){
+                                            //         if(confirm(`You forgot to add "${selectedIngredient}" into your ingredient list. Do you want to add it?`)){
+                                            //             handleAddIngredient();
+                                            //         }else{
+                                            //             setSelectedIngredient("");
+                                            //         }
+                                            //     }
+                                            // }, 2000)
+                                        }
                                     }
-                                }
                                 // onKeyUp={(e) => {
                                 //     if (!(e instanceof KeyboardEvent)) return;
                                 //     console.log("keyup", e.target.value);
                                 // }}
                                 // onSelect={
                                 //     (e) => {
-                                        // console.log(e.nativeEvent);
-                                        // console.log(e.nativeEvent instanceof Event);
+                                // console.log(e.nativeEvent);
+                                // console.log(e.nativeEvent instanceof Event);
 
-                                        // const event = e.nativeEvent
-                                        // if(event instanceof MouseEvent && event.type == 'keyup'){
-                                        //     console.log("I bet you clicked into it");
-                                        // }
-                                        // if(event instanceof KeyboardEvent && event.type == 'keyup'){
-                                        //     console.log("I bet you typed");
-                                        // }
-                                        // if(event instanceof KeyboardEvent && event.type == 'keyup'){
-                                        //     console.log("I bet you typed");
-                                        // }
-                            //         }
-                            //     }
-                            />
-                            <datalist name="ingredient-list" id="ingredient-list">
-                                {(allIngredientIDs && allIngredientNames) &&
-                                    allIngredientNames.map((data, index) =>
-                                        <option key={index} value={data} />
-                                    )
-                                }
-                            </datalist>
-                            <button type="button" className="ml-2 px-1 bg-white outline-1 outline-gray-400"
-                                onClick={handleAddIngredient}
-                            >
-                                Add Tag
-                            </button>
-                        </div>
+                                // const event = e.nativeEvent
+                                // if(event instanceof MouseEvent && event.type == 'keyup'){
+                                //     console.log("I bet you clicked into it");
+                                // }
+                                // if(event instanceof KeyboardEvent && event.type == 'keyup'){
+                                //     console.log("I bet you typed");
+                                // }
+                                // if(event instanceof KeyboardEvent && event.type == 'keyup'){
+                                //     console.log("I bet you typed");
+                                // }
+                                //         }
+                                //     }
+                                />
+                                <datalist name="ingredient-list" id="ingredient-list">
+                                    {(allIngredientIDs && allIngredientNames) &&
+                                        allIngredientNames.map((data, index) =>
+                                            <option key={index} value={data} />
+                                        )
+                                    }
+                                </datalist>
+                                <button type="button" className="ml-2 px-1 bg-white outline-1 outline-gray-400"
+                                    onClick={handleAddIngredient}
+                                >
+                                    Add Tag
+                                </button>
+                            </div></div>
                         <div className="flex flex-wrap gap-4">
                             <RenderTags />
                         </div>

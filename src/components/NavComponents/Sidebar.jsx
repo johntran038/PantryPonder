@@ -8,9 +8,6 @@ const Sidebar = ({ className, onClick, session, username }) => {
 
     const location = useLocation();
 
-    console.log(location.pathname == '/create-dish');
-    
-
     return (
         <div className="bg-gray-500">
             <div className="mt-10 sticky top-0 space-y-2">
