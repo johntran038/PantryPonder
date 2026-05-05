@@ -26,7 +26,7 @@ const Profile = () => {
                 .from("public_profile")
                 .select(`
                     *,
-                    profile(*)
+                    personal:profile(*)
                 `)
                 .eq("username", username)
                 .single();
@@ -40,8 +40,6 @@ const Profile = () => {
         }
         getData();
     }, [username])
-
-    console.log("ddd", profile);
     
 
     const handleLogout = async () => {
@@ -53,20 +51,6 @@ const Profile = () => {
             console.log("Logout error:", error);
         }
     }
-
-    // useEffect(()=>{
-    //     // console.log(ingredientNames);
-    //     // console.log(ingredientIDs);
-
-    // }, [ingredientIDs, ingredientNames]);
-
-    // const RenderTags = () => {
-    //     return (<>
-    //         {ingredientNames.map((ingredient, index)=>(
-    //             <Tag key={index} name={ingredient} onRemove={handleRemoveIngredient}/>
-    //         ))}
-    //     </>);
-    // };
 
     console.log(session);
 
@@ -86,7 +70,7 @@ const Profile = () => {
                         <ul>
                             <li>Username: {profile?.username || ''}</li>
                             <li>Display Name: {profile?.display_name || ''}</li>
-                            <li>Email: {profile?.profile?.email || ''}</li>
+                            <li>Email: {profile?.personal?.email || ''}</li>
                         </ul>
                     }
                     <button className="mt-20 hover:bg-red-500 hover:text-white p-1 rounded-lg underline" onClick={handleLogout}>Sign Out</button>

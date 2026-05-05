@@ -43,22 +43,20 @@ const Home = () => {
 
     useEffect(() => {
         async function getData() {
-            if (searchIngredients.length == 0) {
+            if (searchIngredients?.length == 0) {
                 const { data: DishData } = await supabase.from("dish").select("dish_id, dish_name, img_url, creator_id");
                 setDish(DishData);
             } else {
-                // const { data: filteredDishData } = await supabase
-                //     .from("profile")
-                //     .select("username")
-                //     .eq("id", session?.user.id)
-                //     .single();
-                // setSearchIngredients(filteredDishData);
+                const ingredientIds = searchIngredients.map(ingredient=>ingredient.id);
+                const { data:filteredDishData } = await supabase
+                    .from("dish_with_ingredients")
+                    .select("dish_id, dish_name, img_url, creator_id")
+                    .contains("ingredient_ids", ingredientIds);
+                setDish(filteredDishData);
             }
         }
         getData();
     }, [searchIngredients])
-
-    console.log(dish.sort((di, sh)=>di.dish_id - sh.dish_id));
     
 
     useEffect(() => {
@@ -94,12 +92,13 @@ const Home = () => {
             setSelectedIngredient("");
             return;
         };
+        const targetID = getIngredientID(target);
         
 
         setSearchIngredients((prev) =>
             prev.includes(target)
                 ? prev
-                : [...prev, target]
+                : [...prev, {id: targetID, name: target}]
         );
         setSelectedIngredient('');
     };
@@ -107,15 +106,16 @@ const Home = () => {
     const handleRemoveIngredient = (ingredientToRemove) => {
         setSearchIngredients(
             searchIngredients.filter(
-                (ingredient) => ingredient != ingredientToRemove
+                (ingredient) => ingredient.name != ingredientToRemove
             )
         );
     };
+    
 
     const RenderTags = () => {
         return (<>
             {searchIngredients.map((ingredient, index) => (
-                <Tag key={index} name={ingredient} onRemove={handleRemoveIngredient} />
+                <Tag key={index} name={ingredient.name} onRemove={handleRemoveIngredient} />
             ))}
         </>);
     };
@@ -132,7 +132,7 @@ const Home = () => {
                 <div className="bg-blue-200 col-span-7 p-2">
                     <section className="p-5">
                         <div className={`flex p-1 bg-white focus-within:bg-gray-200 rounded-xl`}>
-                            <input list="search-ingredient" className="w-full outline-none" type="text"
+                            <input list="search-ingredient" className="w-full outline-none" type="text" placeholder="Search by Ingredient"
                                 value={selectedIngredient} onChange={e => setSelectedIngredient(e.target.value)}
                             />
                             <datalist id="search-ingredient" placeholder="Search Ingredients...">
