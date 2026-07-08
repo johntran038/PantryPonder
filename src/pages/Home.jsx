@@ -9,6 +9,7 @@ import { useSupabase } from "../hook/useSupabase";
 import { useSession } from "../hook/useSession";
 import { IoIosSearch } from "react-icons/io";
 import Tag from "../components/UIComponents/Tag";
+import { offlineMode, mockDishesDisplayed, mockDish } from "../utils/config";
 
 
 const Home = () => {
@@ -39,7 +40,7 @@ const Home = () => {
     }, [])
 
     // console.log(dish);
-    
+
 
     useEffect(() => {
         async function getData() {
@@ -47,8 +48,8 @@ const Home = () => {
                 const { data: DishData } = await supabase.from("dish").select("dish_id, dish_name, img_url, creator_id");
                 setDish(DishData);
             } else {
-                const ingredientIds = searchIngredients.map(ingredient=>ingredient.id);
-                const { data:filteredDishData } = await supabase
+                const ingredientIds = searchIngredients.map(ingredient => ingredient.id);
+                const { data: filteredDishData } = await supabase
                     .from("dish_with_ingredients")
                     .select("dish_id, dish_name, img_url, creator_id")
                     .contains("ingredient_ids", ingredientIds);
@@ -57,7 +58,7 @@ const Home = () => {
         }
         getData();
     }, [searchIngredients])
-    
+
 
     useEffect(() => {
         if (!session?.user?.id) return;
@@ -93,12 +94,12 @@ const Home = () => {
             return;
         };
         const targetID = getIngredientID(target);
-        
+
 
         setSearchIngredients((prev) =>
             prev.includes(target)
                 ? prev
-                : [...prev, {id: targetID, name: target}]
+                : [...prev, { id: targetID, name: target }]
         );
         setSelectedIngredient('');
     };
@@ -110,7 +111,7 @@ const Home = () => {
             )
         );
     };
-    
+
 
     const RenderTags = () => {
         return (<>
@@ -149,11 +150,18 @@ const Home = () => {
                         }
                     </section>
                     <FreeHeightPanel cols={5}>
-                        {dish.map((dish, index) => (
-                            <Post key={index}
-                                details={dish}
-                            />
-                        ))}
+                        {offlineMode ?  (
+                            Array.from({ length:mockDishesDisplayed }, (_, index) => (
+                                <Post key={index}
+                                    details={mockDish}/>
+                            ))
+                        ) : (
+                            dish.map((dish, index) => (
+                                <Post key={index}
+                                    details={dish}
+                                />
+                            )))
+                        }
                     </FreeHeightPanel>
                 </div>
             </div>

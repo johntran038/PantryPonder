@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSupabase } from "../hook/useSupabase";
 import { useNavigate } from "react-router-dom"
+import { offlineMode, mockDish } from "../utils/config";
 
 
 const Dish = () => {
@@ -19,6 +20,10 @@ const Dish = () => {
 
 
     useEffect(() => {
+        if(offlineMode){
+            setDish(mockDish);
+            return;
+        }
         async function getData() {
             const { data, error } = await supabase
                 .from("dish_with_ingredients")
@@ -28,12 +33,13 @@ const Dish = () => {
             setDish(data);
         }
         getData();
-    }, [])
+    }, [offlineMode])
 
     // console.log("Dish:", dish);
 
     // console.log("??", typeof dish.ingredients, dish.ingredients);
-
+    console.log(dish.img_url);
+    
 
     return (
         <div className="h-screen bg-blue-200 p-5">
