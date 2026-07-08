@@ -149,7 +149,7 @@ const Home = () => {
                             </div>
                         }
                     </section>
-                    <FreeHeightPanel cols={5}>
+                    <FreeHeightPanel>
                         {offlineMode ?  (
                             Array.from({ length:mockDishesDisplayed }, (_, index) => (
                                 <Post key={index}

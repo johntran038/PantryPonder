@@ -1,6 +1,22 @@
 import React, { useState, useEffect } from "react";
 
-const FreeHeightPanel = ({ children, cols = 1 }) => {
+const FreeHeightPanel = ({ children }) => {
+
+    const [cols, setCols] = useState(1);
+
+    useEffect(() => {
+        const updateCols = () => {
+            if (window.innerWidth >= 1536) setCols(5); //2xl
+            else if (window.innerWidth >= 1280) setCols(5); //xl
+            else if (window.innerWidth >= 1024) setCols(4); //lg
+            else if (window.innerWidth >= 768) setCols(3); //md
+            else if (window.innerWidth >= 640) setCols(2); //sm
+            else setCols(1); //xs or default
+        };
+        updateCols();
+        window.addEventListener("resize", updateCols);
+        return () => window.removeEventListener("resize", updateCols);
+    }, [window.innerWidth]);
 
     const columns = []
     for (let i = 0; i < cols; i++) {
