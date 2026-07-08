@@ -1,10 +1,29 @@
+- complete login page and profile page
+- - allow users to see posts on their profile
+- allow user to update previous post
+
+- allow user to filter by ingredients
+- - save ingredients in local storage
+
+- make an instagram api connection that connects
+  to an account specifically for reposting food
+  every time this accounts repost, it takes the
+  data and normalizes it into a post on pantry ponder
+
+
+
+
+
+
+
+
+
+
+
+completed
 x added dynamic page for each dish
 x got ingredients to console log as a list by making a view
 x on supabase, add "owner of dish" as a foreign key for profile_id
 x x make some fake profiles
 x allow user with profile to post
-- properly render ingredients list
-- complete login page and profile page
-- allow user to filter by ingredients
-- - save ingredients in local storage
-- allow user to update previous post
+x properly render ingredients list

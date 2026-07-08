@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
+import useScreenSize from "../../hook/useScreenSize";
 
 const FreeHeightPanel = ({ children }) => {
+
+    const screenSize = useScreenSize();
 
     const [cols, setCols] = useState(1);
 
     useEffect(() => {
-        const updateCols = () => {
-            if (window.innerWidth >= 1536) setCols(5); //2xl
-            else if (window.innerWidth >= 1280) setCols(5); //xl
-            else if (window.innerWidth >= 1024) setCols(4); //lg
-            else if (window.innerWidth >= 768) setCols(3); //md
-            else if (window.innerWidth >= 640) setCols(2); //sm
-            else setCols(1); //xs or default
-        };
-        updateCols();
-        window.addEventListener("resize", updateCols);
-        return () => window.removeEventListener("resize", updateCols);
-    }, [window.innerWidth]);
+        if (screenSize == "2xl") setCols(5);
+        else if (screenSize == "xl") setCols(5);
+        else if (screenSize == "lg") setCols(4);
+        else if (screenSize == "md") setCols(3);
+        else if (screenSize == "sm") setCols(2);
+        else if (screenSize == "xs") setCols(2);
+        else setCols(1); //xs or default
+    }, [screenSize]);
+
 
     const columns = []
     for (let i = 0; i < cols; i++) {

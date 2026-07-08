@@ -1,6 +1,6 @@
 import MockDishImg from "../img/mock-dish.jpg";
 
-/*/
+//*/
 export const offlineMode = false;
 /*/
 export const offlineMode = true;
