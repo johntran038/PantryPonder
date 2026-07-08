@@ -1,0 +1,1 @@
+const s="/PantryPonder/assets/mock-dish-CdzNtOdB.jpg",o=!0,i=20,e={dish_id:"NA",dish_name:"Mock Dish",img_url:s,ingredients:["one fis huh","twuoh fis huh"],recipe:"doctor sues or something"};export{e as a,i as m,o};
