@@ -3,7 +3,7 @@ import useScreenSize from "../../hook/useScreenSize";
 
 const FreeHeightPanel = ({ children }) => {
 
-    const screenSize = useScreenSize();
+    const { screenSize } = useScreenSize();
 
     const [cols, setCols] = useState(1);
 

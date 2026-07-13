@@ -10,7 +10,6 @@ import { useSession } from "../hook/useSession";
 import { IoIosSearch } from "react-icons/io";
 import Tag from "../components/UIComponents/Tag";
 import { offlineMode, mockDishesDisplayed, mockDish } from "../utils/config";
-import useScreenSize from "../hook/useScreenSize";
 
 
 const Home = () => {
@@ -26,7 +25,6 @@ const Home = () => {
     const [selectedIngredient, setSelectedIngredient] = useState('');
     const [searchIngredients, setSearchIngredients] = useState([]);
 
-    const screenSize = useScreenSize();
 
     const getIngredientID = (name) => {
         return ingredients.find(ingredient => ingredient.ingredient_name == name)?.ingredient_id;
@@ -132,7 +130,7 @@ const Home = () => {
                 </PopUp>
             </div> */}
             <div className="h-screen grid grid-cols-20">
-                <Sidebar className={`w-full md:w-auto fixed md:static bottom-0 md:bottom-auto md:col-span-2`} onClick={setOpenPopup} session={session} username={username} />
+                <Sidebar className={`md:col-span-2`} onClick={setOpenPopup} session={session} username={username} />
                 <div className={`bg-blue-200 col-span-20 md:col-span-18 p-2`}>
                     <section className="p-5 sticky top-0">
                         <form className={`flex p-1 bg-white focus-within:bg-gray-200 rounded-xl`}

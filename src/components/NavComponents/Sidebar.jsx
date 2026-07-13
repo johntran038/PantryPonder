@@ -13,10 +13,10 @@ const Sidebar = ({ className, onClick, session, username }) => {
     const navigate = useNavigate();
 
     const location = useLocation();
-    const screenSize = useScreenSize();
+    const { screenSize } = useScreenSize();
 
     return (
-        <div className={`bg-gray-500 ${className} text-5xl md:text-4xl`}>
+        <div className={`bg-gray-500 ${className} text-5xl md:text-4xl     w-full md:w-auto fixed md:static bottom-0 md:bottom-auto`}>
             <div className="
                 p-4 sticky top-0 space-x-6 flex justify-center items-center
                 
@@ -24,13 +24,13 @@ const Sidebar = ({ className, onClick, session, username }) => {
                 md:pt-10 md:space-x-0 md:space-y-2 md:block
                 ">
                 <div className="flex justify-center items-center">
-                    <button className="bg-gray-200 p-1 rounded-lg" onClick={() => { navigate(`/`) }}>
+                    <button className="bg-gray-200 p-1 rounded-lg cursor-pointer" onClick={() => { navigate(`/`) }}>
                         {/* Discover */}
                         <ImCompass2 />
                     </button>
                 </div>
                 <div className="flex justify-center items-center">
-                    <button className="bg-gray-200 p-1 rounded-lg"
+                    <button className="bg-gray-200 p-1 rounded-lg cursor-pointer opacity-50"
                         onClick={
                             () => { onClick(true) }
                         }>
@@ -39,28 +39,34 @@ const Sidebar = ({ className, onClick, session, username }) => {
                     </button>
                 </div>
                 {/* <div className="flex justify-center items-center">
-                    <button className="bg-gray-200 p-1 rounded-lg">Saved Dishes</button>
+                    <button className="bg-gray-200 p-1 rounded-lg cursor-pointer">Saved Dishes</button>
                 </div> */}
                 {session ?
                     (
                         <div className="flex justify-center items-center">
-                            <button className="bg-gray-200 p-1 rounded-lg" onClick={() => { navigate(`/${username}`) }}>
+                            <button className="bg-gray-200 p-1 rounded-lg cursor-pointer" onClick={() => { navigate(`/${username}`) }}>
                                 {/* My Profile */}
                                 <IoPerson />
                             </button>
                         </div>
                     ) : (
                         <div className="flex justify-center items-center">
-                            <button className="bg-gray-200 p-1 rounded-lg" onClick={() => { navigate("/login") }}>
+                            <button className="bg-gray-200 p-1 rounded-lg cursor-pointer" onClick={() => { navigate("/login") }}>
                                 {/* Login */}
                                 <FaPersonCircleQuestion />
                             </button>
                         </div>
                     )
                 }
-                {(session && location.pathname != '/create-dish') && (
+                {(session) && (
                     <div className="flex justify-center items-center">
-                        <button className="bg-gray-200 p-1 rounded-lg" onClick={() => { navigate(`/create-dish`) }}>
+                        <button className="
+                            bg-gray-200 p-1 rounded-lg cursor-pointer
+                            disabled:opacity-50 disabled:cursor-default
+                        "
+                        onClick={() => { navigate(`/create-dish`)}}
+                        disabled={location.pathname == '/create-dish'}
+                        >
                             <CiSquarePlus />
                             {/* Create A Dish */}
                         </button>
@@ -68,12 +74,11 @@ const Sidebar = ({ className, onClick, session, username }) => {
                 )}
 
                 {/* VVVVVVVV DELETE AFTER TESTING VVVVVVVVVVVVV */}
-                <div className="flex justify-center items-center">
-                    <button className={`${screenSize == "xss" && "bg-red-700"} ${screenSize == "xs" && "bg-orange-300"} sm:bg-green-500 md:bg-gray-200 p-1 rounded-lg`} onClick={() => { navigate(`/${username}`) }}>
-                        {/* My Profile */}
+                {/* <div className="flex justify-center items-center">
+                    <button className={`${screenSize == "2xs" && "bg-red-700"} ${screenSize == "xs" && "bg-orange-300"} sm:bg-green-500 md:bg-gray-200 p-1 rounded-lg cursor-pointer`}>
                         <IoPerson />
                     </button>
-                </div>
+                </div> */}
             </div>
         </div>
     )

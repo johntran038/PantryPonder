@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom"
 import { useSupabase } from "../hook/useSupabase";
 import { useSession } from '../hook/useSession';
+import ResponsiveHelper from '../utils/ResponsiveHelper';
+import useScreenSize from '../hook/useScreenSize';
 
 
 const Login = () => {
@@ -18,6 +20,8 @@ const Login = () => {
     const [isUniqueUsername, setIsUniqueUsername] = useState(true)
 
     const navigate = useNavigate();
+    
+    const { screenSize, ifScreen } = useScreenSize();
 
     const handleAuth = async (e) => {
         e.preventDefault()
@@ -36,7 +40,7 @@ const Login = () => {
                 const user = data.user
 
                 if (user) {
-                    const { error:publicProfileError } = await supabase
+                    const { error: publicProfileError } = await supabase
                         .from("public_profile")
                         .insert({
                             id: user.id,
@@ -67,8 +71,8 @@ const Login = () => {
         }
     }
 
-    useEffect(()=>{
-        
+    useEffect(() => {
+
         const getData = async () => {
             const { data: existingUser, error: usernameCheckError } = await supabase
                 .from("public_profile")
@@ -76,11 +80,11 @@ const Login = () => {
                 .eq("username", username)
                 .maybeSingle();
             console.log(existingUser);
-            
+
             setIsUniqueUsername(!(existingUser))
         }
         getData();
-    },[username]);
+    }, [username]);
 
     const handleLogout = async () => {
         await supabase.auth.signOut()
@@ -97,64 +101,86 @@ const Login = () => {
     }
 
     return (
-        <div className='h-screen bg-blue-200 p-4'>
-            <h1 className='text-2xl'>{isSignup ? 'Sign Up' : 'Login'}</h1>
+        <div className='h-screen bg-blue-200 flex justify-center items-center'>
+            <ResponsiveHelper />
+            <section className='bg-white rounded-lg shadow-lg px-10 pb-20'>
+                <h1 className='text-3xl pt-5 pb-20 flex justify-center'>{isSignup ? 'Sign Up' : 'Login'}</h1>
 
-            <form onSubmit={handleAuth}>
-                <section>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        required
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        required
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </section>
-                {isSignup && (
-                    <section>
-                        <input
-                            type="text"
-                            placeholder="Display Name"
-                            value={displayName}
+                <form onSubmit={handleAuth} className='space-y-5 sm:w-120'>
+                    <section className='space-y-2 w-full'>
+                        <label htmlFor="email" className='block'>Email</label>
+                        <input className='w-full outline-2 rounded-sm outline-gray-300 p-2'
+                            id="email"
+                            type="email"
+                            placeholder="Email"
+                            value={email}
                             required
-                            onChange={(e) => setDisplayName(e.target.value)}
-                        />
-
-                        <input
-                            type="text"
-                            placeholder="Username"
-                            value={username}
-                            required
-                            onChange={(e) => setUsername(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </section>
-                )}
+                    <section className='space-y-2'>
+                        <label htmlFor="password" className='block'>Password</label>
+                        <input className='w-full outline-2 rounded-sm outline-gray-300 p-2'
+                            id="password"
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            required
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </section>
+                    {isSignup && (<>
+                        <section className={`${screenSize != "2xs" && "flex"} gap-2 items-center`}>
+                            <label htmlFor="display-name" className='block shrink-0'>Display Name:</label>
+                            <input className='outline-2 rounded-sm outline-gray-300 p-2 w-full mt-2'
+                                id='display-name'
+                                type="text"
+                                placeholder="Display Name"
+                                value={displayName}
+                                required
+                                onChange={(e) => setDisplayName(e.target.value)}
+                            />
+                        </section>
 
-                <button className='mt-3 bg-gray-200 p-1 rounded-lg outline-1 outline-gray-400 disabled:opacity-60 disabled:text-gray-600'
-                    disabled={loading || !isUniqueUsername}
-                >
-                    {loading
-                        ? 'Loading...'
-                        : isSignup
-                            ? 'Create Account'
-                            : 'Login'}
-                </button>
-            </form>
+                        <section className={`${screenSize != "2xs" && "flex"} gap-2 items-center`}>
+                            <label htmlFor="username" className='block shrink-0'>Username:</label>
+                            <input className='outline-2 rounded-sm outline-gray-300 p-2 w-full mt-2'
+                                id='username'
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                required
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                        </section>
+                    </>)}
 
-            <p style={{ marginTop: '10px' }}>
-                {isSignup ? 'Already have an account? ' : 'Don’t have an account? '}
-                <button onClick={() => setIsSignup(!isSignup)}>
-                    <div className='text-blue-700 hover:text-blue-500 underline'>{isSignup ? 'Login' : 'Sign Up'}</div>
-                </button>
-            </p>
+                    <button className='mt-3 bg-gray-200 p-1 rounded-lg outline-1 outline-gray-400 disabled:opacity-60 disabled:text-gray-600'
+                        disabled={loading || !isUniqueUsername}
+                    >
+                        {loading
+                            ? 'Loading...'
+                            : isSignup
+                                ? 'Create Account'
+                                : 'Login'}
+                    </button>
+                </form>
+
+                {/* <p style={{ marginTop: '10px' }}>
+                    {isSignup ? 'Already have an account? ' : 'Don’t have an account? '}
+                    <button onClick={() => setIsSignup(!isSignup)}>
+                        <div className='text-blue-700 hover:text-blue-500 underline'>{isSignup ? 'Login' : 'Sign Up'}</div>
+                    </button>
+                </p> */}
+                <section className='mt-[10px]'>
+                    {isSignup ? 'Already have an account? ' : 'Don’t have an account? '}
+                    <button onClick={() => setIsSignup(!isSignup)}>
+                        <div className='text-blue-700 hover:text-blue-500 underline'>
+                            {isSignup ? 'Login' : 'Sign Up'}
+                        </div>
+                    </button>
+                </section>
+            </section>
         </div>
     )
 }

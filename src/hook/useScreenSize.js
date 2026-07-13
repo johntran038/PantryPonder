@@ -12,14 +12,19 @@ const useScreenSize = () => {
             else if (window.innerWidth >= 768) setScreenSize("md");
             else if (window.innerWidth >= 640) setScreenSize("sm");
             else if (window.innerWidth >= 480) setScreenSize("xs");
-            else setScreenSize("xss");
+            else setScreenSize("2xs");
         };
         getSize();
         window.addEventListener("resize", getSize);
         return () => window.removeEventListener("resize", getSize);
     }, []);
 
-    return screenSize;
+    const ifScreen = (size, style=undefined) => {
+        if(style === undefined) return size == screenSize;
+        return size == screenSize ? style : "";
+    }
+
+    return { screenSize, ifScreen };
 }
 
 export default useScreenSize;
