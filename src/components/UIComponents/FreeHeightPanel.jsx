@@ -14,7 +14,7 @@ const FreeHeightPanel = ({ children }) => {
         else if (screenSize == "md") setCols(3);
         else if (screenSize == "sm") setCols(2);
         else if (screenSize == "xs") setCols(2);
-        else setCols(1); //xs or default
+        else setCols(1); //2xs
     }, [screenSize]);
 
 
