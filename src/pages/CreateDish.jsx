@@ -199,24 +199,26 @@ const CreateDish = () => {
     };
 
     return (
-        <div className="h-screen bg-blue-200 grid grid-cols-8">
-            <Sidebar session={session} username={username} />
-            <form onSubmit={handleSubmit} className="space-y-2 pt-1 col-span-6">
+        <div className="min-h-screen bg-blue-200 grid grid-cols-8 xl:grid-cols-10">
+            <Sidebar session={session} username={username} className="col-span-1" />
+            <form onSubmit={handleSubmit} className="space-y-2 pt-1 col-span-8 md:col-span-6 xl:col-span-8 pb-30">
 
                 <div className="grid grid-cols-2 space-x-4">
-
                     <section className="col-span-full flex items-center p-5">
                         <h1 className="text-lg">Create A Dish</h1>
                         <button type="submit" className="ml-auto bg-gray-200 outline-1 outline-gray-400 text-lg p-2 rounded-lg">
                             Post Dish
                         </button>
                     </section>
-                    <section className="flex mx-4 select-none">
-                        <label htmlFor="img" className="rounded-3xl h-fit ml-auto cursor-pointer outline-1 outline-gray-400 group relative">
+                </div>
+
+                <div className="grid grid-cols-1 asdfdfspace-x-4 lg:grid-cols-4">
+                    <section className="flex m-4 select-none col-span-1 lg:col-span-2">
+                        <label htmlFor="img" className="rounded-3xl h-fit mr-auto ml-auto lg:mr-0 cursor-pointer outline-1 outline-gray-400 group relative">
                             {image
-                                ? <img className="w-90 rounded-3xl" src={URL.createObjectURL(image)} alt={image?.name || ""} />
+                                ? <img className="w-75 sm:w-90 rounded-3xl" src={URL.createObjectURL(image)} alt={image?.name || ""} />
                                 :
-                                <div className="bg-gray-200 h-120 w-90 rounded-3xl flex flex-col justify-center items-center">
+                                <div className="bg-gray-200 h-75 sm:h-120 w-75 sm:w-90  rounded-3xl flex flex-col justify-center items-center">
                                     <LuHardDriveUpload className="group-hover:z-999 group-hover:text-neutral-300" />
                                     <div className="group-hover:z-999 group-hover:text-neutral-300">Choose file to upload</div>
                                 </div>
@@ -259,7 +261,8 @@ const CreateDish = () => {
                             }}
                         />
                     </section>
-                    <section className="space-y-4 mx-4">
+
+                    <section className="space-y-4 m-4 col-span-1 lg:col-span-2">
                         <div className="bg-white outline-1 outline-gray-400 p-2 rounded-xl">
                             <label htmlFor="dish-name" className="block text-sm text-gray-700">Dish Name</label>
                             <input

@@ -7,7 +7,7 @@ const ResponsiveHelper = ({ className }) => {
     const { screenSize, ifScreen } = useScreenSize();
     
     return (
-        <div className=" absolute top-0 w-full">
+        <div className=" absolute top-0 w-full z-100">
             <div className="relative h-15 flex justify-center items-center">
                 <div className="relative z-10 text-4xl font-bold text-white [-webkit-text-stroke:1.5px_black] uppercase">
                     {screenSize}

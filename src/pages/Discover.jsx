@@ -131,7 +131,7 @@ const Discover = () => {
             </div> */}
             <div className="h-screen grid grid-cols-20">
                 <Sidebar className={`md:col-span-2`} onClick={setOpenPopup} session={session} username={username} />
-                <div className={`bg-blue-200 col-span-20 md:col-span-18 p-2`}>
+                <div className={`bg-blue-200 col-span-20 md:col-span-18 p-2 pb-40`}>
                     <section className="p-5 sticky top-0">
                         <form className={`flex p-1 bg-white focus-within:bg-gray-200 rounded-xl`}
                             onSubmit={(e) => {

@@ -17,7 +17,7 @@ const Sidebar = ({ className, onClick, session, username }) => {
     const { screenSize } = useScreenSize();
 
     return (
-        <div className={`bg-gray-500 ${className} text-5xl md:text-4xl     w-full md:w-auto fixed md:static bottom-0 md:bottom-auto`} tooltip="">
+        <div className={`bg-gray-500 ${className} text-5xl md:text-4xl  w-full md:w-auto fixed md:static bottom-0 md:bottom-auto`}>
             <div className="
                 p-4 sticky top-0 space-x-6 flex justify-center items-center
                 
