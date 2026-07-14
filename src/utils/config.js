@@ -1,4 +1,4 @@
-import MockDishImg from "../img/mock-dish.jpg";
+import MockDishImg from "../../public/img/mock-dish.jpg";
 
 //*/
 export const offlineMode = false;

@@ -5,7 +5,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 function App() {
-    const Home = lazy(() => import("./pages/Home"));
+    const Discover = lazy(() => import("./pages/Discover"));
     const Login = lazy(() => import("./pages/Login"));
     const Dish = lazy(() => import("./pages/Dish"));
     const Profile = lazy(() => import("./pages/Profile"));
@@ -17,7 +17,7 @@ function App() {
         <>
             <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
-                    <Route exact path="/" element={<Home />} />
+                    <Route exact path="/" element={<Discover />} />
                     <Route exact path="/login" element={<Login />} />
                     <Route exact path="/dish/:id" element={<Dish/>} />
                     <Route exact path="/create-dish" element={<CreateDish/>} />

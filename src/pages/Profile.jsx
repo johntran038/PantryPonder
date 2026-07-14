@@ -58,11 +58,6 @@ const Profile = () => {
     return (
         <div className="h-screen bg-blue-200  grid grid-cols-8">
             <Sidebar session={session} username={username} />
-            {/* <h1 className="mb-5 text-lg">
-                <button onClick={() => { navigate(`/`) }}>
-                    Back to Home
-                </button>
-            </h1> */}
             <div className="col-span-7">
             {session &&
                 <div className="p-4">
